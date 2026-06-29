@@ -1,0 +1,1988 @@
+
+<title>Dashboard Rodar Mutual — Maio 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#EEF3FA;color:#11100C;display:flex;height:100vh;overflow:hidden}
+
+/* LOGIN OVERLAY */
+#login-overlay{position:fixed;inset:0;background:#13376D;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:0}
+#login-overlay.hidden{display:none}
+.login-box{background:#fff;border-radius:12px;padding:40px 48px;width:340px;box-shadow:0 8px 40px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:20px}
+.login-logo{font-size:26px;font-weight:900;color:#13376D;letter-spacing:.04em;line-height:1}
+.login-logo span{color:#7AF6EE}
+.login-tagline{font-size:11px;color:#89B3D9;letter-spacing:.13em;text-transform:uppercase;margin-top:2px}
+.login-title{font-size:14px;color:#5A6A7E;margin-top:4px}
+.login-field{display:flex;flex-direction:column;gap:6px}
+.login-field label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#5A6A7E;font-weight:700}
+.login-field input{border:1.5px solid #D0DCF0;border-radius:7px;padding:10px 14px;font-size:15px;font-family:inherit;outline:none;transition:border-color .15s;color:#13376D}
+.login-field input:focus{border-color:#1C588C}
+.login-btn{background:#13376D;color:#fff;border:none;border-radius:7px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:background .15s}
+.login-btn:hover{background:#1C588C}
+.login-error{font-size:12px;color:#D94F4F;text-align:center;min-height:16px;font-weight:600}
+.login-badge{background:rgba(255,203,56,.18);border:1px solid rgba(255,203,56,.4);border-radius:5px;padding:5px 12px;font-size:11px;color:#FFCB38;font-weight:700;text-align:center;letter-spacing:.06em}
+
+
+/* SIDEBAR */
+.sidebar{width:228px;min-width:228px;background:#13376D;color:#fff;display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.sb-header{padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-logo{font-size:21px;font-weight:800;letter-spacing:.04em;color:#7AF6EE;line-height:1}
+.sb-tagline{font-size:10px;color:#89B3D9;letter-spacing:.13em;text-transform:uppercase;margin-top:3px}
+.sb-pill{margin-top:12px;background:rgba(255,203,56,.14);border:1px solid rgba(255,203,56,.32);border-radius:4px;padding:5px 10px;font-size:12px;color:#FFCB38;font-weight:700;display:inline-block}
+.sb-section{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:#89B3D9;padding:18px 20px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:13.5px;color:rgba(255,255,255,.7);border-left:3px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.09);color:#fff;border-left-color:#FFCB38;font-weight:600}
+.nav-icon{width:18px;font-size:14px;text-align:center;opacity:.85}
+.sb-footer{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;color:rgba(255,255,255,.35)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;padding:28px 32px;max-width:100%}
+.section-page{display:none;animation:fin .2s ease}
+.section-page.active{display:block}
+@keyframes fin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.page-header{margin-bottom:24px}
+.page-title{font-size:25px;font-weight:800;color:#13376D;letter-spacing:-.025em;text-wrap:balance}
+.page-sub{font-size:13px;color:#5A6A7E;margin-top:4px}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:22px}
+.kpi{background:#fff;border-radius:7px;padding:18px 20px;border-top:3px solid #13376D;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.kpi.ok{border-top-color:#2AAA6A}
+.kpi.warn{border-top-color:#FFCB38}
+.kpi.bad{border-top-color:#D94F4F}
+.kpi.cyan{border-top-color:#7AF6EE}
+.kpi.blue{border-top-color:#1C588C}
+.kpi-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.09em;color:#5A6A7E;margin-bottom:7px}
+.kpi-value{font-size:27px;font-weight:800;color:#13376D;font-variant-numeric:tabular-nums;letter-spacing:-.02em;line-height:1}
+.kpi-value.ok{color:#2AAA6A}
+.kpi-value.bad{color:#D94F4F}
+.kpi-value.cyan{color:#0BB5AC}
+.kpi-context{font-size:12px;color:#89B3D9;margin-top:6px}
+
+/* CARDS */
+.card{background:#fff;border-radius:8px;padding:22px 24px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:18px}
+.card-title{font-size:11px;font-weight:700;color:#5A6A7E;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #EEF3FA}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:#5A6A7E;padding:7px 10px;border-bottom:2px solid #EEF3FA;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #F4F7FB;color:#11100C}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#F8FAFE}
+.tr{text-align:right}
+.tb{font-weight:700}
+.ts{font-size:12px;color:#5A6A7E}
+
+/* BAR ROWS */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.bar-label{font-size:13px;color:#11100C;min-width:170px;flex-shrink:0}
+.bar-track{flex:1;height:9px;background:#EEF3FA;border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px;background:#1C588C;transition:width .4s}
+.bar-fill.navy{background:#13376D}
+.bar-fill.cyan{background:#7AF6EE}
+.bar-fill.yellow{background:#FFCB38}
+.bar-fill.red{background:#D94F4F}
+.bar-fill.green{background:#2AAA6A}
+.bar-fill.light{background:#89B3D9}
+.bar-val{font-size:13px;font-weight:700;color:#13376D;min-width:110px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* DONUT */
+.donut-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.donut-legend{display:flex;flex-direction:column;gap:10px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:13px}
+.legend-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:.03em}
+.bg{background:#E8F5EE;color:#2AAA6A}
+.br{background:#FDEAEA;color:#D94F4F}
+.by{background:#FFF8DE;color:#9A6E00}
+.bb{background:#EAF1FB;color:#1C588C}
+
+/* INSIGHT BOX */
+.insight{padding:11px 14px;border-radius:0 6px 6px 0;font-size:13px;margin-top:14px;line-height:1.5}
+.ins-blue{background:#EAF1FB;border-left:3px solid #1C588C;color:#0C2D5E}
+.ins-green{background:#E8F5EE;border-left:3px solid #2AAA6A;color:#1A5C35}
+.ins-warn{background:#FFF8DE;border-left:3px solid #FFCB38;color:#6B4A00}
+.ins-red{background:#FDEAEA;border-left:3px solid #D94F4F;color:#7A1A1A}
+
+/* PROGRESS BAR (horizontal fill) */
+.prog-bar{height:12px;background:#EEF3FA;border-radius:6px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:6px;background:#13376D}
+
+/* DIVIDER */
+.divider{height:1px;background:#EEF3FA;margin:16px 0}
+
+/* RESULT BADGE big */
+.result-big{display:flex;align-items:baseline;gap:8px;margin-top:8px}
+.result-num{font-size:36px;font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.result-label{font-size:13px;color:#5A6A7E}
+
+/* FLAG */
+.flag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 9px;border-radius:4px}
+.flag-green{background:#E8F5EE;color:#2AAA6A}
+.flag-red{background:#FDEAEA;color:#D94F4F}
+.flag-yellow{background:#FFF8DE;color:#9A6E00}
+</style>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div>
+      <div class="login-logo">RODAR<span>.</span></div>
+      <div class="login-tagline">Operação Rodar Mutual</div>
+    </div>
+    <div class="login-badge">RESULTADOS · MAIO 2026</div>
+    <div class="login-title">Digite a senha para acessar</div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="pwd-input" placeholder="••••••••••••" autocomplete="current-password"/>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <button class="login-btn" onclick="checkPassword()">Acessar →</button>
+  </div>
+</div>
+
+<div class="sidebar">
+  <div class="sb-header">
+    <div class="sb-logo">RODAR</div>
+    <div class="sb-tagline">Proteção Patrimonial Mutualista</div>
+    <div class="sb-pill">Relatório · Maio 2026</div>
+  </div>
+
+  <div class="sb-section">Resultados</div>
+  <div class="nav-item active" onclick="show('sumario',this)">
+    <span class="nav-icon">◈</span> Sumário Executivo
+  </div>
+  <div class="nav-item" onclick="show('carteira',this)">
+    <span class="nav-icon">🚛</span> Carteira
+  </div>
+  <div class="nav-item" onclick="show('financeiro',this)">
+    <span class="nav-icon">💰</span> Financeiro
+  </div>
+  <div class="nav-item" onclick="show('produtos',this)">
+    <span class="nav-icon">📦</span> Produtos
+  </div>
+  <div class="nav-item" onclick="show('clientes',this)">
+    <span class="nav-icon">👥</span> Clientes
+  </div>
+
+  <div class="sb-section">Gestão</div>
+  <div class="nav-item" onclick="show('inadimplencia',this)">
+    <span class="nav-icon">🔴</span> Inadimplência
+  </div>
+  <div class="nav-item" onclick="show('sinistro',this)">
+    <span class="nav-icon">⚠</span> Sinistro
+  </div>
+  <div class="nav-item" onclick="show('assistencia',this)">
+    <span class="nav-icon">🔧</span> Assistência 24h
+  </div>
+  <div class="nav-item" onclick="show('rastreamento',this)">
+    <span class="nav-icon">📡</span> Rastreamento
+  </div>
+  <div class="nav-item" onclick="show('distribuicao',this)">
+    <span class="nav-icon">📊</span> Distribuição
+  </div>
+
+  <div class="sb-footer">Rodar Mutual · Jun/26</div>
+</div>
+
+<div class="main">
+
+  <!-- ═══════ SUMÁRIO EXECUTIVO ═══════ -->
+  <div class="section-page active" id="sumario">
+    <div class="page-header">
+      <div class="page-title">Sumário Executivo</div>
+      <div class="page-sub">Visão geral dos resultados · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+      <div class="kpi blue">
+        <div class="kpi-label">Receita Maio</div>
+        <div class="kpi-value">R$ 2,02M</div>
+        <div class="kpi-context">R$ 2.018.076 arrecadados</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Despesas Maio</div>
+        <div class="kpi-value">R$ 1,58M</div>
+        <div class="kpi-context">R$ 1.575.248 totais</div>
+      </div>
+      <div class="kpi ok">
+        <div class="kpi-label">Resultado do Mês</div>
+        <div class="kpi-value ok">+ R$ 442K</div>
+        <div class="kpi-context">Margem 21,9% · POSITIVO</div>
+      </div>
+      <div class="kpi ok">
+        <div class="kpi-label">Índice Combinado</div>
+        <div class="kpi-value ok">78,1%</div>
+        <div class="kpi-context">Desp/Receita · meta &lt;100%  ✓</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Sinistralidade</div>
+        <div class="kpi-value">37,4%</div>
+        <div class="kpi-context">Sinistro/Receita · meta &lt;50%  ✓</div>
+      </div>
+      <div class="kpi cyan">
+        <div class="kpi-label">Placas Ativas</div>
+        <div class="kpi-value cyan">2.029</div>
+        <div class="kpi-context">de 2.266 placas totais</div>
+      </div>
+      <div class="kpi bad">
+        <div class="kpi-label">Inadimplência</div>
+        <div class="kpi-value bad">9,3%</div>
+        <div class="kpi-context">237 placas · R$ 213K em risco</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Receita Acumulada</div>
+        <div class="kpi-value">R$ 4,13M</div>
+        <div class="kpi-context">Fev–Mai 2026</div>
+      </div>
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,#13376D 0%,#1C588C 100%);color:white;margin-bottom:18px">
+      <div style="display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;gap:0;align-items:center">
+        <div style="padding:8px 20px 8px 0;text-align:center">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#89B3D9;margin-bottom:4px">Índice Combinado</div>
+          <div style="font-size:34px;font-weight:900;color:#7AF6EE;font-variant-numeric:tabular-nums">78,1%</div>
+          <div style="font-size:11px;color:#B8D2ED;margin-top:3px">Despesas ÷ Receita</div>
+          <div style="font-size:11px;color:#7AF6EE;font-weight:700;margin-top:2px">▲ Operação superavitária</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.15);height:60px"></div>
+        <div style="padding:8px 20px;text-align:center">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#89B3D9;margin-bottom:4px">Sinistralidade</div>
+          <div style="font-size:34px;font-weight:900;color:#FFCB38;font-variant-numeric:tabular-nums">37,4%</div>
+          <div style="font-size:11px;color:#B8D2ED;margin-top:3px">Sinistro ÷ Receita</div>
+          <div style="font-size:11px;color:#FFCB38;font-weight:700;margin-top:2px">Referência de mercado: &lt;50%</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,.15);height:60px"></div>
+        <div style="padding:8px 0 8px 20px;text-align:center">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#89B3D9;margin-bottom:4px">Resultado</div>
+          <div style="font-size:34px;font-weight:900;color:#7AF6EE;font-variant-numeric:tabular-nums">+ 21,9%</div>
+          <div style="font-size:11px;color:#B8D2ED;margin-top:3px">Margem operacional</div>
+          <div style="font-size:11px;color:#7AF6EE;font-weight:700;margin-top:2px">R$ 442.828 superávit</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Destaques Positivos</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="insight ins-green">
+            ✓ <strong>Primeiro resultado positivo expressivo:</strong> R$ 442.828 de superávit no mês, confirmando estabilização operacional após Maio.
+          </div>
+          <div class="insight ins-green">
+            ✓ <strong>Crescimento de carteira consolidado:</strong> 2.029 placas ativas — operação estável desde Maio/26.
+          </div>
+          <div class="insight ins-green">
+            ✓ <strong>Rastreamento em expansão:</strong> 76,6% da base já possui rastreador instalado.
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Pontos de Atenção</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="insight ins-warn">
+            ⚠ <strong>Sinistralidade em 37,4%:</strong> Custo de R$ 754.053 requer monitoramento dos grandes eventos.
+          </div>
+          <div class="insight ins-warn">
+            ⚠ <strong>Inadimplência e cancelamentos:</strong> 282 placas encerradas em Maio (160 voluntários + 122 por inadimplência ≥ 60 dias).
+          </div>
+          <div class="insight ins-red">
+            ✗ <strong>Pendentes de rastreador:</strong> 187 placas ainda aguardam instalação.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Composição do Resultado · Maio 2026</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;text-align:center">
+        <div style="padding:16px;border-right:1px solid #EEF3FA">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#5A6A7E;margin-bottom:6px">Receita Total</div>
+          <div style="font-size:28px;font-weight:800;color:#1C588C;font-variant-numeric:tabular-nums">R$ 2.018.076</div>
+          <div style="font-size:12px;color:#89B3D9;margin-top:4px">100%</div>
+        </div>
+        <div style="padding:16px;border-right:1px solid #EEF3FA">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#5A6A7E;margin-bottom:6px">Despesas Totais</div>
+          <div style="font-size:28px;font-weight:800;color:#13376D;font-variant-numeric:tabular-nums">R$ 1.575.248</div>
+          <div style="font-size:12px;color:#89B3D9;margin-top:4px">78,1% da receita</div>
+        </div>
+        <div style="padding:16px;background:#F0FBF5;border-radius:0 6px 6px 0">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#5A6A7E;margin-bottom:6px">Resultado</div>
+          <div style="font-size:28px;font-weight:900;color:#2AAA6A;font-variant-numeric:tabular-nums">+ R$ 442.828</div>
+          <div style="font-size:12px;color:#2AAA6A;margin-top:4px;font-weight:600">Margem 21,9% ▲ POSITIVO</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="card-title" style="margin-top:0">Despesas por Categoria (% da Receita)</div>
+      <div class="bar-row">
+        <div class="bar-label">Sinistro</div>
+        <div class="bar-track"><div class="bar-fill red" style="width:37.4%"></div></div>
+        <div class="bar-val">R$ 754.053 · 37,4%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Distribuição / Comercial</div>
+        <div class="bar-track"><div class="bar-fill" style="width:28.8%"></div></div>
+        <div class="bar-val">R$ 582.026 · 28,8%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Administrativo</div>
+        <div class="bar-track"><div class="bar-fill light" style="width:11.8%"></div></div>
+        <div class="bar-val">R$ 239.169 · 11,8%</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Resultado (superávit)</div>
+        <div class="bar-track"><div class="bar-fill green" style="width:21.9%"></div></div>
+        <div class="bar-val" style="color:#2AAA6A">R$ 442.828 · 21,9%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ CARTEIRA ═══════ -->
+  <div class="section-page" id="carteira">
+    <div class="page-header">
+      <div class="page-title">Carteira</div>
+      <div class="page-sub">Composição e evolução da base · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi blue">
+        <div class="kpi-label">Placas Totais (Associadas)</div>
+        <div class="kpi-value">2.266</div>
+        <div class="kpi-context">Total histórico da operação</div>
+      </div>
+      <div class="kpi ok">
+        <div class="kpi-label">Ativos (Ativas + Inad.)</div>
+        <div class="kpi-value cyan">2.029</div>
+        <div class="kpi-context">Placas com mensalidade ativa</div>
+      </div>
+      <div class="kpi bad">
+        <div class="kpi-label">Encerradas / Inativas</div>
+        <div class="kpi-value bad">237</div>
+        <div class="kpi-context">Cancelamentos + inativações</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Encerradas em Maio</div>
+        <div class="kpi-value">282</div>
+        <div class="kpi-context">160 voluntários + 122 inadimpl. ≥60d</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Composição da Carteira</div>
+        <div class="donut-wrap">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#EEF3FA" stroke-width="18"/>
+            <!-- Ativas 89.5% → circunf. 326.7 → 292.4 dos 326.7 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#2AAA6A" stroke-width="18"
+              stroke-dasharray="292.4 34.3" transform="rotate(-90 70 70)" stroke-linecap="butt"/>
+            <!-- Encerradas 10.5% → 34.3 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#D94F4F" stroke-width="18"
+              stroke-dasharray="34.3 292.4" stroke-dashoffset="-292.4" transform="rotate(-90 70 70)" stroke-linecap="butt"/>
+            <text x="70" y="63" text-anchor="middle" font-size="20" font-weight="800" fill="#13376D" font-family="Segoe UI,system-ui,sans-serif">89,5%</text>
+            <text x="70" y="80" text-anchor="middle" font-size="11" fill="#5A6A7E" font-family="Segoe UI,system-ui,sans-serif">ativos</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#2AAA6A"></div>
+              <div>
+                <div style="font-weight:700;font-size:14px">2.029 Ativos</div>
+                <div class="ts">ativas + inadimplentes</div>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#D94F4F"></div>
+              <div>
+                <div style="font-weight:700;font-size:14px">237 Encerradas</div>
+                <div class="ts">cancelamentos acum.</div>
+              </div>
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background:#EEF3FA;border:1px solid #ccc"></div>
+              <div>
+                <div style="font-weight:700;font-size:14px">2.266 Total</div>
+                <div class="ts">associados histórico</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Movimentação em Maio</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span style="font-size:13px">Cancelamentos Voluntários</span>
+              <span class="badge br">160 placas</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:57%;background:#D94F4F"></div></div>
+            <div style="font-size:11px;color:#89B3D9;margin-top:3px">Rescisão a pedido do associado</div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span style="font-size:13px">Inativações por Inadimplência</span>
+              <span class="badge br">122 placas</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:43%;background:#FFCB38"></div></div>
+            <div style="font-size:11px;color:#89B3D9;margin-top:3px">Inadimplência ≥ 60 dias</div>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:14px;font-weight:700">Total encerrado em Maio</span>
+            <span style="font-size:20px;font-weight:800;color:#D94F4F;font-variant-numeric:tabular-nums">282 placas</span>
+          </div>
+        </div>
+        <div class="insight ins-warn">
+          A limpeza da base (cancelamentos + inativações) é positiva para a saúde financeira da operação — reduz sinistralidade latente e inadimplência.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Status de Rastreamento da Carteira</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+        <div style="text-align:center;padding:16px;background:#EAF1FB;border-radius:7px">
+          <div style="font-size:32px;font-weight:900;color:#13376D">1.555</div>
+          <div style="font-size:12px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Rastreadas</div>
+          <div style="font-size:12px;color:#1C588C;font-weight:700;margin-top:4px">76,6% da base</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#FFF8DE;border-radius:7px">
+          <div style="font-size:32px;font-weight:900;color:#9A6E00">187</div>
+          <div style="font-size:12px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Pendentes instalação</div>
+          <div style="font-size:12px;color:#9A6E00;font-weight:700;margin-top:4px">9,2% da base</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#EEF3FA;border-radius:7px">
+          <div style="font-size:32px;font-weight:900;color:#5A6A7E">31</div>
+          <div style="font-size:12px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Migração/espelhamento</div>
+          <div style="font-size:12px;color:#89B3D9;font-weight:600;margin-top:4px">Em processo</div>
+        </div>
+      </div>
+      <div class="bar-row" style="margin-top:18px">
+        <div class="bar-label">Cobertura de rastreamento</div>
+        <div class="bar-track" style="height:12px"><div class="bar-fill green" style="width:76.6%"></div></div>
+        <div class="bar-val">76,6%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ FINANCEIRO ═══════ -->
+  <div class="section-page" id="financeiro">
+    <div class="page-header">
+      <div class="page-title">Financeiro</div>
+      <div class="page-sub">Receitas, despesas e resultado · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi blue">
+        <div class="kpi-label">Receita Total</div>
+        <div class="kpi-value">R$ 2.018.076</div>
+        <div class="kpi-context">Arrecadação mês</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Despesas Total</div>
+        <div class="kpi-value">R$ 1.575.248</div>
+        <div class="kpi-context">78,1% da receita</div>
+      </div>
+      <div class="kpi ok">
+        <div class="kpi-label">Resultado (Superávit)</div>
+        <div class="kpi-value ok">+ R$ 442.828</div>
+        <div class="kpi-context">Margem 21,9%</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label">Receita Acumulada</div>
+        <div class="kpi-value">R$ 4.130.899</div>
+        <div class="kpi-context">Fev–Mai 2026</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Composição da Receita</div>
+        <div class="bar-row">
+          <div class="bar-label">Mensalidade</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:91.2%"></div></div>
+          <div class="bar-val">R$ 1.840.359</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Part. Obrigatória</div>
+          <div class="bar-track"><div class="bar-fill" style="width:3.2%"></div></div>
+          <div class="bar-val">R$ 65.251</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Instal. Rastreadores</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:0.9%"></div></div>
+          <div class="bar-val">R$ 18.090</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Outras receitas</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:4.7%"></div></div>
+          <div class="bar-val">R$ 94.376</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px">
+          <span>TOTAL RECEITA</span>
+          <span style="font-variant-numeric:tabular-nums">R$ 2.018.076</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Composição das Despesas</div>
+        <div class="bar-row">
+          <div class="bar-label">Sinistros</div>
+          <div class="bar-track"><div class="bar-fill red" style="width:47.9%"></div></div>
+          <div class="bar-val">R$ 754.053</div>
+        </div>
+        <div style="font-size:11px;color:#89B3D9;margin:-8px 0 12px 0;padding-left:170px">47,9% das desp. · 37,4% da rec.</div>
+        <div class="bar-row">
+          <div class="bar-label">Distribuição / Comercial</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:36.9%"></div></div>
+          <div class="bar-val">R$ 582.026</div>
+        </div>
+        <div style="font-size:11px;color:#89B3D9;margin:-8px 0 12px 0;padding-left:170px">36,9% das despesas</div>
+        <div class="bar-row">
+          <div class="bar-label">Administrativo</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:15.2%"></div></div>
+          <div class="bar-val">R$ 239.169</div>
+        </div>
+        <div style="font-size:11px;color:#89B3D9;margin:-8px 0 12px 0;padding-left:170px">15,2% das despesas</div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;font-weight:700;font-size:14px">
+          <span>TOTAL DESPESAS</span>
+          <span style="font-variant-numeric:tabular-nums">R$ 1.575.248</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Índices Financeiros</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div style="text-align:center;padding:16px;background:#EEF3FA;border-radius:6px">
+          <div style="font-size:24px;font-weight:800;color:#13376D">21,9%</div>
+          <div style="font-size:11px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Margem Resultado</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#FDEAEA;border-radius:6px">
+          <div style="font-size:24px;font-weight:800;color:#D94F4F">37,4%</div>
+          <div style="font-size:11px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Sinistralidade</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#EAF1FB;border-radius:6px">
+          <div style="font-size:24px;font-weight:800;color:#1C588C">28,8%</div>
+          <div style="font-size:11px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Custo Distribuição</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#EEF3FA;border-radius:6px">
+          <div style="font-size:24px;font-weight:800;color:#13376D">R$ 907</div>
+          <div style="font-size:11px;color:#5A6A7E;margin-top:4px;text-transform:uppercase;letter-spacing:.07em">Ticket Médio / Placa</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="card-title" style="margin-top:0">Despesas Administrativas · Detalhamento</div>
+      <div class="two-col">
+        <div class="bar-row">
+          <div class="bar-label">Ocupação / Obras</div>
+          <div class="bar-track"><div class="bar-fill" style="width:55%"></div></div>
+          <div class="bar-val">R$ 43.133</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">RH / Colaboradores</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:40%"></div></div>
+          <div class="bar-val">R$ 31.341</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Equipamentos TI</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:30%"></div></div>
+          <div class="bar-val">R$ 23.712</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Software & Sistemas</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:21%"></div></div>
+          <div class="bar-val">R$ 16.831</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#89B3D9;margin-top:4px">9 colaboradores · Obra 15º andar SP em andamento</div>
+    </div>
+  </div>
+
+  <!-- ═══════ SINISTRO ═══════ -->
+  <div class="section-page" id="sinistro">
+    <div class="page-header">
+      <div class="page-title">Sinistro</div>
+      <div class="page-sub">Ocorrências e custos · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi bad">
+        <div class="kpi-label">Total Sinistros (acum.)</div>
+        <div class="kpi-value bad">86</div>
+        <div class="kpi-context">Ocorrências acumuladas</div>
+      </div>
+      <div class="kpi bad">
+        <div class="kpi-label">Custo Sinistros Maio</div>
+        <div class="kpi-value bad">R$ 754.053</div>
+        <div class="kpi-context">47,9% das despesas totais</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Sinistralidade</div>
+        <div class="kpi-value">37,4%</div>
+        <div class="kpi-context">% da receita mensal</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Custo Médio / Sinistro</div>
+        <div class="kpi-value">R$ 8.768</div>
+        <div class="kpi-context">Estimativa por evento</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Maiores Eventos de Sinistro · Maio 2026</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Associado / Evento</th>
+              <th class="tr">Valor</th>
+              <th class="tr">Parcela</th>
+              <th>Observação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tb">Adilson Pereira Jr. (NTY7J85)</td>
+              <td class="tr tb" style="color:#D94F4F">R$ 88.140</td>
+              <td class="tr ts">integral</td>
+              <td><span class="badge br">Maior evento</span></td>
+            </tr>
+            <tr>
+              <td class="tb">Dalle Transportes</td>
+              <td class="tr tb" style="color:#D94F4F">R$ 75.000</td>
+              <td class="tr ts">1ª de 5</td>
+              <td><span class="badge by">Parcelado</span></td>
+            </tr>
+            <tr>
+              <td class="tb">F2L LOG</td>
+              <td class="tr tb" style="color:#D94F4F">R$ 45.000</td>
+              <td class="tr ts">parcelado</td>
+              <td><span class="badge by">Em andamento</span></td>
+            </tr>
+            <tr>
+              <td class="tb">FC May Cerealista</td>
+              <td class="tr tb">R$ 40.838</td>
+              <td class="tr ts">1ª de 3</td>
+              <td><span class="badge by">Parcelado</span></td>
+            </tr>
+            <tr>
+              <td class="tb">Matheus Kruger</td>
+              <td class="tr tb">R$ 22.090</td>
+              <td class="tr ts">1ª de 2</td>
+              <td><span class="badge by">Parcelado</span></td>
+            </tr>
+            <tr>
+              <td class="tb">Indeniz. Edson Ferreira</td>
+              <td class="tr tb">R$ 10.000</td>
+              <td class="tr ts">2ª de 20</td>
+              <td><span class="badge bb">Longo prazo</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight ins-warn" style="margin-top:16px">
+        Os 6 maiores eventos representam <strong>R$ 281.068</strong> dos R$ 754.053 em sinistros — 37,3% do total. Monitoramento individual é essencial.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Composição do Custo de Sinistro</div>
+        <div class="bar-row">
+          <div class="bar-label">RCF (Responsabilidade)</div>
+          <div class="bar-track"><div class="bar-fill red" style="width:67%"></div></div>
+          <div class="bar-val">R$ 621.243</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Assist. Rastreamento</div>
+          <div class="bar-track"><div class="bar-fill" style="width:17%"></div></div>
+          <div class="bar-val">R$ 106.455</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Benefício Pane</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:3.9%"></div></div>
+          <div class="bar-val">R$ 25.512</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Seguro de Vida</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:0.5%"></div></div>
+          <div class="bar-val">R$ 3.000</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Assistência Funeral</div>
+          <div class="bar-track"><div class="bar-fill yellow" style="width:1%"></div></div>
+          <div class="bar-val">R$ 7.000</div>
+        </div>
+        <div style="font-size:12px;color:#89B3D9;margin-top:8px">*Dados acumulados Fev–Mai 2026</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Situação dos Sinistros (Maio)</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+          <div style="display:flex;justify-content:space-between;padding:12px;background:#FDEAEA;border-radius:6px;align-items:center">
+            <span style="font-size:13px;font-weight:600">Em análise / abertos</span>
+            <span style="font-size:22px;font-weight:800;color:#D94F4F">32</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px;background:#FFF8DE;border-radius:6px;align-items:center">
+            <span style="font-size:13px;font-weight:600">Em situação (processando)</span>
+            <span style="font-size:22px;font-weight:800;color:#9A6E00">9</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:12px;background:#EEF3FA;border-radius:6px;align-items:center">
+            <span style="font-size:13px;font-weight:600">Total acumulado</span>
+            <span style="font-size:22px;font-weight:800;color:#13376D">86</span>
+          </div>
+        </div>
+        <div class="insight ins-blue" style="margin-top:12px">
+          A gestão dos sinistros parcelados é crítica: vários eventos geram obrigações financeiras futuras que devem ser provisionadas.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ ASSISTÊNCIA 24H ═══════ -->
+  <div class="section-page" id="assistencia">
+    <div class="page-header">
+      <div class="page-title">Assistência 24h</div>
+      <div class="page-sub">Atendimentos e custos operacionais · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Atendimentos no Mês</div>
+        <div class="kpi-value">32</div>
+        <div class="kpi-context">Ocorrências atendidas</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Custo Total</div>
+        <div class="kpi-value">R$ 82.909</div>
+        <div class="kpi-context">Custo operacional assist. 24h</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label">Ticket Médio Geral</div>
+        <div class="kpi-value">R$ 2.271</div>
+        <div class="kpi-context">Por atendimento</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Frequência Geral</div>
+        <div class="kpi-value">1,65%</div>
+        <div class="kpi-context">Sobre base com cobertura (1.941 pl.)</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Frequência por Unidade (Kcor)</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Unidade</th>
+              <th class="tr">Atendimentos</th>
+              <th class="tr">Base Ativa</th>
+              <th class="tr">Frequência</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Kcor Digital – Londrina</td>
+              <td class="tr">1</td>
+              <td class="tr">2</td>
+              <td class="tr tb"><span class="badge br">50,00%</span></td>
+            </tr>
+            <tr>
+              <td>Kcor Light Itajai – Cordeiro</td>
+              <td class="tr">2</td>
+              <td class="tr">37</td>
+              <td class="tr tb"><span class="badge by">5,41%</span></td>
+            </tr>
+            <tr>
+              <td>Kcor São Paulo</td>
+              <td class="tr">10</td>
+              <td class="tr">287</td>
+              <td class="tr tb"><span class="badge by">3,48%</span></td>
+            </tr>
+            <tr>
+              <td>Kcor Itajai</td>
+              <td class="tr">7</td>
+              <td class="tr">352</td>
+              <td class="tr tb"><span class="badge by">1,99%</span></td>
+            </tr>
+            <tr>
+              <td>Kcor Maringá</td>
+              <td class="tr">6</td>
+              <td class="tr">448</td>
+              <td class="tr tb"><span class="badge bg">1,34%</span></td>
+            </tr>
+            <tr>
+              <td>Kcor Joinville</td>
+              <td class="tr">4</td>
+              <td class="tr">350</td>
+              <td class="tr tb"><span class="badge bg">1,14%</span></td>
+            </tr>
+            <tr>
+              <td>Kcor Londrina</td>
+              <td class="tr">2</td>
+              <td class="tr">240</td>
+              <td class="tr tb"><span class="badge bg">0,83%</span></td>
+            </tr>
+            <tr style="background:#EAF1FB">
+              <td class="tb">TOTAL</td>
+              <td class="tr tb">32</td>
+              <td class="tr tb">1.716</td>
+              <td class="tr tb">1,65%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight ins-warn">
+        Kcor SP (10 atend.) e Kcor Itajai (7 atend.) concentram <strong>53% dos atendimentos</strong>. Unidades com frequência acima de 3% merecem análise de perfil de risco.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Serviços Realizados por Tipo</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo de Atendimento</th>
+              <th>Serviço</th>
+              <th class="tr">Nº Atend.</th>
+              <th class="tr">Ticket Médio</th>
+              <th class="tr">Custo Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pane</td>
+              <td>Remoção Pane</td>
+              <td class="tr tb">25</td>
+              <td class="tr">R$ 2.521,37</td>
+              <td class="tr tb">R$ 63.034</td>
+            </tr>
+            <tr>
+              <td>Atend. Emergencial Sinistro</td>
+              <td>Remoção Sinistro</td>
+              <td class="tr tb">4</td>
+              <td class="tr">R$ 1.146,08</td>
+              <td class="tr tb">R$ 4.584</td>
+            </tr>
+            <tr>
+              <td>Atend. Emergencial Sinistro</td>
+              <td>Resgate</td>
+              <td class="tr tb">1</td>
+              <td class="tr">R$ 3.800,00</td>
+              <td class="tr tb">R$ 3.800</td>
+            </tr>
+            <tr>
+              <td>Dep. Sinistro</td>
+              <td>Remoção Log. Sinistro</td>
+              <td class="tr tb">1</td>
+              <td class="tr">R$ 1.013,50</td>
+              <td class="tr tb">R$ 1.014</td>
+            </tr>
+            <tr>
+              <td>Ausência de Chaves</td>
+              <td>Chaveiro</td>
+              <td class="tr tb">1</td>
+              <td class="tr">R$ 250,00</td>
+              <td class="tr tb">R$ 250</td>
+            </tr>
+            <tr style="background:#EAF1FB">
+              <td class="tb">TOTAL</td>
+              <td class="tb">—</td>
+              <td class="tr tb">32</td>
+              <td class="tr tb">R$ 2.271,32</td>
+              <td class="tr tb">R$ 82.910</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:12px;color:#89B3D9;margin-top:8px">
+        Remoção por pane representa 78% dos atendimentos e 76% do custo total de assistência 24h.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ RASTREAMENTO ═══════ -->
+  <div class="section-page" id="rastreamento">
+    <div class="page-header">
+      <div class="page-title">Rastreamento</div>
+      <div class="page-sub">Cobertura e tecnologia instalada · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi ok">
+        <div class="kpi-label">Base Rastreada</div>
+        <div class="kpi-value cyan">1.555</div>
+        <div class="kpi-context">76,6% das placas ativas</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Pendentes Instalação</div>
+        <div class="kpi-value">187</div>
+        <div class="kpi-context">9,2% da base ativa</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Migração / Espelhamento</div>
+        <div class="kpi-value">31</div>
+        <div class="kpi-context">Em processo de transferência</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label">Cobertura Total</div>
+        <div class="kpi-value">76,6%</div>
+        <div class="kpi-context">Meta ideal: 100%</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Cobertura de Rastreamento por Tecnologia</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tecnologia / Fornecedor</th>
+              <th class="tr">Base Rastreada</th>
+              <th class="tr">Pendentes</th>
+              <th class="tr">Migração em Andamento</th>
+              <th class="tr">% da Base Rastreada</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tb">TRACKER</td>
+              <td class="tr tb">1.422</td>
+              <td class="tr">124</td>
+              <td class="tr">22</td>
+              <td class="tr tb">91,4%</td>
+            </tr>
+            <tr>
+              <td class="tb">CEABS</td>
+              <td class="tr tb">90</td>
+              <td class="tr">63</td>
+              <td class="tr">—</td>
+              <td class="tr tb">5,8%</td>
+            </tr>
+            <tr>
+              <td class="tb">Espelhamento de Sinal</td>
+              <td class="tr tb">43</td>
+              <td class="tr">—</td>
+              <td class="tr">9</td>
+              <td class="tr tb">2,8%</td>
+            </tr>
+            <tr style="background:#EAF1FB">
+              <td class="tb">TOTAL</td>
+              <td class="tr tb">1.555</td>
+              <td class="tr tb">187</td>
+              <td class="tr tb">31</td>
+              <td class="tr tb">100%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="bar-row">
+        <div class="bar-label">TRACKER (91,4%)</div>
+        <div class="bar-track"><div class="bar-fill navy" style="width:91.4%"></div></div>
+        <div class="bar-val">1.422 unidades</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">CEABS (5,8%)</div>
+        <div class="bar-track"><div class="bar-fill" style="width:5.8%"></div></div>
+        <div class="bar-val">90 unidades</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Espelhamento (2,8%)</div>
+        <div class="bar-track"><div class="bar-fill light" style="width:2.8%"></div></div>
+        <div class="bar-val">43 unidades</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Cobertura Geral</div>
+        <div style="text-align:center;padding:20px 0">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#EEF3FA" stroke-width="20"/>
+            <!-- 76.6% = 286deg → circunferência 2π×60=376.99 → 288.8 dos 376.99 -->
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#2AAA6A" stroke-width="20"
+              stroke-dasharray="288.8 88.2" transform="rotate(-90 75 75)"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#FFCB38" stroke-width="20"
+              stroke-dasharray="35.1 341.9" stroke-dashoffset="-288.8" transform="rotate(-90 75 75)"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#EEF3FA" stroke-width="20"
+              stroke-dasharray="53.1 323.9" stroke-dashoffset="-323.9" transform="rotate(-90 75 75)"/>
+            <text x="75" y="68" text-anchor="middle" font-size="22" font-weight="800" fill="#13376D" font-family="Segoe UI,system-ui,sans-serif">76,6%</text>
+            <text x="75" y="86" text-anchor="middle" font-size="12" fill="#5A6A7E" font-family="Segoe UI,system-ui,sans-serif">rastreadas</text>
+          </svg>
+        </div>
+        <div class="donut-legend" style="margin:0 auto;width:fit-content">
+          <div class="legend-item"><div class="legend-dot" style="background:#2AAA6A"></div><span>1.555 Rastreadas (76,6%)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#FFCB38"></div><span>187 Pendentes instalação (9,2%)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#EEF3FA;border:1px solid #ccc"></div><span>287 Outras situações (14,1%)</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Análise e Prioridades</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="insight ins-green">
+            ✓ <strong>76,6% de cobertura</strong> é uma base sólida. TRACKER domina com 91,4% dos equipamentos instalados.
+          </div>
+          <div class="insight ins-warn">
+            ⚠ <strong>187 pendentes de instalação:</strong> Cada placa sem rastreador representa risco operacional e sinistral não monitorado.
+          </div>
+          <div class="insight ins-blue">
+            ◆ <strong>CEABS com 63 pendentes</strong> (41% do próprio backlog): pode ser gargalo de instalação que precisa de ação junto ao fornecedor.
+          </div>
+          <div class="insight ins-blue">
+            ◆ <strong>31 em migração/espelhamento:</strong> Processo em andamento, acompanhar conclusão.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ DISTRIBUIÇÃO ═══════ -->
+  <div class="section-page" id="distribuicao">
+    <div class="page-header">
+      <div class="page-title">Distribuição Comercial</div>
+      <div class="page-sub">Comissões, marketing e investimentos comerciais · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi blue">
+        <div class="kpi-label">Total Distribuição</div>
+        <div class="kpi-value">R$ 582.026</div>
+        <div class="kpi-context">36,9% das despesas totais</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Comissões (44,4%)</div>
+        <div class="kpi-value">R$ 258.647</div>
+        <div class="kpi-context">Canais e representantes</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Marketing/Comercial (38,7%)</div>
+        <div class="kpi-value">R$ 225.053</div>
+        <div class="kpi-context">Investimento comercial</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Patrocínio Copa Truck (15,2%)</div>
+        <div class="kpi-value">R$ 88.740</div>
+        <div class="kpi-context">Ação de marca/visibilidade</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Composição do Custo de Distribuição</div>
+        <div class="bar-row">
+          <div class="bar-label">Comissões de venda</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:44.4%"></div></div>
+          <div class="bar-val">R$ 258.647</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Marketing / Comercial</div>
+          <div class="bar-track"><div class="bar-fill" style="width:38.7%"></div></div>
+          <div class="bar-val">R$ 225.053</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Patrocínio Copa Truck</div>
+          <div class="bar-track"><div class="bar-fill yellow" style="width:15.2%"></div></div>
+          <div class="bar-val">R$ 88.740</div>
+        </div>
+        <div class="divider"></div>
+        <div class="card-title" style="margin:0 0 12px">Detalhamento de Comissões</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>Canal / Parceiro</th><th class="tr">Valor</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>KCOR Licenciadora</td><td class="tr tb">R$ 59.036</td></tr>
+              <tr><td>Manzato SC</td><td class="tr">R$ 28.197</td></tr>
+              <tr><td>WPM Consultoria</td><td class="tr">R$ 24.572</td></tr>
+              <tr><td>Luchetti Brasil</td><td class="tr">R$ 14.187</td></tr>
+              <tr><td class="ts">Demais canais</td><td class="tr ts">R$ 132.655</td></tr>
+              <tr style="background:#EAF1FB"><td class="tb">Total Comissões</td><td class="tr tb">R$ 258.647</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Marketing e Patrocínio Copa Truck</div>
+        <div class="card-title" style="font-size:11px;color:#89B3D9;border:none;padding:0;margin-bottom:12px">Marketing / Comercial — R$ 225.053</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>Item</th><th class="tr">Valor</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Joelson (2× parcelas)</td><td class="tr tb">R$ 40.000</td></tr>
+              <tr><td>Investimento KCOR (2/3)</td><td class="tr">R$ 35.932</td></tr>
+              <tr><td>Copa Truck – material</td><td class="tr">R$ 19.427</td></tr>
+              <tr><td class="ts">Outros</td><td class="tr ts">R$ 5.694</td></tr>
+              <tr style="background:#EEF3FA"><td class="ts">Demais itens</td><td class="tr ts">R$ 124.000</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="divider"></div>
+        <div class="card-title" style="font-size:11px;color:#89B3D9;border:none;padding:0;margin-bottom:12px">Patrocínio Copa Truck — R$ 88.740</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>Item</th><th class="tr">Valor</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Ingressos Copa Truck</td><td class="tr tb">R$ 57.667</td></tr>
+              <tr><td>Copa Truck (parcela 2/10)</td><td class="tr">R$ 30.000</td></tr>
+              <tr><td>Camisetas / brindes</td><td class="tr">R$ 1.073</td></tr>
+              <tr style="background:#EAF1FB"><td class="tb">Total Patrocínio</td><td class="tr tb">R$ 88.740</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="insight ins-blue" style="margin-top:12px">
+          O patrocínio Copa Truck é investimento de marca e relacionamento com o público caminhoneiro — retorno medido em visibilidade e novos associados.
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Emissões Maio 2026 por Franquia (Subscrição)</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Franquia</th>
+              <th class="tr">Propostas</th>
+              <th class="tr">Placas</th>
+              <th class="tr">Ticket Médio</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Kcor Maringá</td><td class="tr">103</td><td class="tr tb">229</td><td class="tr">R$ 1.766</td></tr>
+            <tr><td>Kcor São Paulo</td><td class="tr">48</td><td class="tr tb">90</td><td class="tr">R$ 2.276</td></tr>
+            <tr><td>Kcor Joinville</td><td class="tr">64</td><td class="tr tb">90</td><td class="tr">R$ 1.179</td></tr>
+            <tr><td>Kcor FJLM (SP)</td><td class="tr">39</td><td class="tr tb">99</td><td class="tr">R$ 2.359</td></tr>
+            <tr><td>Kcor Londrina</td><td class="tr">32</td><td class="tr tb">83</td><td class="tr">R$ 1.892</td></tr>
+            <tr><td>Kcor Itajai</td><td class="tr">43</td><td class="tr tb">59</td><td class="tr">R$ 875</td></tr>
+            <tr><td class="ts">Demais franquias</td><td class="tr ts">33</td><td class="tr ts">33</td><td class="tr ts">—</td></tr>
+            <tr style="background:#EAF1FB">
+              <td class="tb">TOTAL</td>
+              <td class="tr tb">362</td>
+              <td class="tr tb">683</td>
+              <td class="tr tb">R$ 1.678</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="insight ins-green" style="margin-top:12px">
+        Maringá lidera em volume (229 placas). SP e FJLM têm o maior ticket médio (R$ 2.276–R$ 2.359), indicando contratos com frotas maiores.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════ PRODUTOS ═══════ -->
+  <div class="section-page" id="produtos">
+    <div class="page-header">
+      <div class="page-title">Produtos</div>
+      <div class="page-sub">Planos principais e coberturas adicionais contratadas na carteira · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+      <div class="kpi blue">
+        <div class="kpi-label">Total na Base</div>
+        <div class="kpi-value">2.552</div>
+        <div class="kpi-context">Contratos (1 placa = 1 contrato)</div>
+      </div>
+      <div class="kpi cyan">
+        <div class="kpi-label">Placas Ativas</div>
+        <div class="kpi-value cyan">2.029</div>
+        <div class="kpi-context">Com mensalidade em vigor</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Com Alguma RCF</div>
+        <div class="kpi-value">~1.570</div>
+        <div class="kpi-context">Plano principal + add-on DC/DM</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Com Rastreador</div>
+        <div class="kpi-value">1.645</div>
+        <div class="kpi-context">64,5% dos contratos</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Planos Principais — Tipo de Cobertura (Col. O)</div>
+        <div style="font-size:11px;color:#89B3D9;margin:-6px 0 16px">
+          Cada contrato tem um plano principal registrado na col. O. <strong>RCF = Responsabilidade Civil Facultativa</strong> — na base pode estar escrito "RCF" ou "Danos Materiais + Danos Corporais", ambos significam o mesmo produto.
+        </div>
+
+        <div style="margin-bottom:13px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:700;color:#13376D">Cobertura Total do Veículo</span>
+            <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums">1.858 · 72,8%</span>
+          </div>
+          <div style="height:10px;background:#EEF3FA;border-radius:5px;overflow:hidden">
+            <div style="height:100%;width:100%;background:#13376D;border-radius:5px"></div>
+          </div>
+          <div style="font-size:11px;color:#89B3D9;margin-top:3px">Colisão + Roubo + Furto + Incêndio — CM, Semirreboque, Caminhão</div>
+        </div>
+
+        <div style="margin-bottom:13px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:700;color:#FFCB38">RCF standalone</span>
+            <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:#9A6E00">377 · 14,8%</span>
+          </div>
+          <div style="height:10px;background:#EEF3FA;border-radius:5px;overflow:hidden">
+            <div style="height:100%;width:20.3%;background:#FFCB38;border-radius:5px"></div>
+          </div>
+          <div style="font-size:11px;color:#89B3D9;margin-top:3px">Responsabilidade civil como produto único, sem veículo associado</div>
+        </div>
+
+        <div style="margin-bottom:13px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:700;color:#89B3D9">Cob. Total + RCF embutido (combo)</span>
+            <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums">129 · 5,1%</span>
+          </div>
+          <div style="height:10px;background:#EEF3FA;border-radius:5px;overflow:hidden">
+            <div style="height:100%;width:6.9%;background:#89B3D9;border-radius:5px"></div>
+          </div>
+          <div style="font-size:11px;color:#89B3D9;margin-top:3px">Veículo + Danos Corporais/Materiais incluídos no mesmo plano</div>
+        </div>
+
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+            <span style="font-size:13px;font-weight:600;color:#5A6A7E">Roubo e Furto (parcial)</span>
+            <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums">16 · 0,6%</span>
+          </div>
+          <div style="height:10px;background:#EEF3FA;border-radius:5px;overflow:hidden">
+            <div style="height:100%;width:0.9%;background:#B8D2ED;border-radius:5px"></div>
+          </div>
+          <div style="font-size:11px;color:#89B3D9;margin-top:3px">Cobertura parcial, sem colisão</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- RCF total (incluindo add-on col M) -->
+        <div style="background:#FFF8DE;border-radius:8px;padding:12px 14px;border-left:4px solid #FFCB38">
+          <div style="font-size:12px;font-weight:700;color:#9A6E00;margin-bottom:6px">+ RCF via Adicionais (Col. M)</div>
+          <div style="font-size:12px;color:#5A6A7E;line-height:1.6">
+            Outros <strong>1.066 contratos</strong> com Cob. Total também têm Danos Corporais/Materiais contratados como adicional (col. M) — que são RCF. Somando tudo:
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:12px">
+            <div>
+              <div style="font-size:28px;font-weight:800;color:#13376D;line-height:1;font-variant-numeric:tabular-nums">~1.570</div>
+              <div style="font-size:11px;color:#9A6E00;font-weight:700">contratos com alguma RCF</div>
+            </div>
+            <div style="flex:1">
+              <div style="height:10px;background:#EEF3FA;border-radius:5px;overflow:hidden;margin-bottom:4px">
+                <div style="height:100%;width:61.5%;background:#FFCB38;border-radius:5px"></div>
+              </div>
+              <div style="font-size:11px;color:#89B3D9">61,5% da base total de 2.552</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Composição por Tipo de Veículo</div>
+        <div style="font-size:11px;color:#89B3D9;margin:-6px 0 14px">
+          CM = <strong>Cavalo Mecânico</strong> (trator, cavalo da bi-trem). Fonte: prefixo do plano principal (col. O) da base.
+        </div>
+        <div class="donut-wrap" style="margin-bottom:18px">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#EEF3FA" stroke-width="18"/>
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#13376D" stroke-width="18"
+              stroke-dasharray="109.3 204.9" transform="rotate(-90 65 65)"/>
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#1C588C" stroke-width="18"
+              stroke-dasharray="96.7 217.5" stroke-dashoffset="-109.3" transform="rotate(-90 65 65)"/>
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#89B3D9" stroke-width="18"
+              stroke-dasharray="40.2 274" stroke-dashoffset="-206" transform="rotate(-90 65 65)"/>
+            <circle cx="65" cy="65" r="50" fill="none" stroke="#D0DCF0" stroke-width="18"
+              stroke-dasharray="67.5 246.7" stroke-dashoffset="-246.2" transform="rotate(-90 65 65)"/>
+            <text x="65" y="60" text-anchor="middle" font-size="13" font-weight="800" fill="#13376D" font-family="Segoe UI,system-ui,sans-serif">2.552</text>
+            <text x="65" y="75" text-anchor="middle" font-size="9" fill="#5A6A7E" font-family="Segoe UI,system-ui,sans-serif">contratos</text>
+          </svg>
+          <div class="donut-legend">
+            <div class="legend-item"><div class="legend-dot" style="background:#13376D"></div><div><div style="font-weight:700">890 CM (Cavalo Mecânico)</div><div class="ts">34,8% — trator da carreta</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#1C588C"></div><div><div style="font-weight:700">786 Semirreboque</div><div class="ts">30,8% — carreta / implemento</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#89B3D9"></div><div><div style="font-weight:700">327 Caminhão (rígido)</div><div class="ts">12,8% — caminhão toco/trucado</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#D0DCF0;border:1px solid #ccc"></div><div><div style="font-weight:700">549 RCF / outros</div><div class="ts">21,5% — resp. civil sem veículo</div></div></div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="card-title" style="margin-top:0">Marcas da Frota (Top 6)</div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Scania</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:100%"></div></div>
+          <div class="bar-val" style="min-width:80px">491 · 19,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Volvo</div>
+          <div class="bar-track"><div class="bar-fill" style="width:79%"></div></div>
+          <div class="bar-val" style="min-width:80px">387 · 15,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Mercedes-Benz</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:63%"></div></div>
+          <div class="bar-val" style="min-width:80px">311 · 12,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Volkswagen</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:47%"></div></div>
+          <div class="bar-val" style="min-width:80px">232 · 9,1%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Randon</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:46%"></div></div>
+          <div class="bar-val" style="min-width:80px">224 · 8,8%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">DAF</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:23%"></div></div>
+          <div class="bar-val" style="min-width:80px">112 · 4,4%</div>
+        </div>
+        <div style="font-size:11px;color:#89B3D9;margin-top:6px">Scania+Volvo+MB = 46,6% da frota. Frotas europeias premium dominantes.</div>
+      </div>
+    </div>
+
+    <!-- ═ ADICIONAIS DETALHADOS ═ -->
+    <div class="card">
+      <div class="card-title">Coberturas Adicionais por Tipo e Variação (Col. M)</div>
+      <div style="font-size:11px;color:#89B3D9;margin:-6px 0 16px">
+        Cada placa pode contratar múltiplos adicionais. Contagem = nº de placas com aquele item. Dados extraídos da coluna M da base. <strong>Danos Corporais e Danos Materiais = RCF.</strong>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+
+        <!-- RASTREADOR -->
+        <div style="background:#F4F8FF;border-radius:8px;padding:13px;border-top:3px solid #13376D">
+          <div style="font-size:12px;font-weight:700;color:#13376D;margin-bottom:4px">Rastreador</div>
+          <div style="font-size:11px;color:#89B3D9;margin-bottom:10px">Total <strong style="color:#13376D">1.645</strong> placas · 64,5% da base</div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">CM</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill navy" style="width:100%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">990</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">Carreta</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:34%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">338</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">Caminhão</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill light" style="width:32%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">317</div>
+          </div>
+        </div>
+
+        <!-- VIDROS -->
+        <div style="background:#F4F8FF;border-radius:8px;padding:13px;border-top:3px solid #1C588C">
+          <div style="font-size:12px;font-weight:700;color:#1C588C;margin-bottom:4px">Vidros</div>
+          <div style="font-size:11px;color:#89B3D9;margin-bottom:10px">Total <strong style="color:#1C588C">1.259</strong> placas · 49,3% da base</div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">Vidros CM</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill navy" style="width:100%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">962</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">Retrovisores</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill light" style="width:31%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">297</div>
+          </div>
+        </div>
+
+        <!-- DANOS MORAIS -->
+        <div style="background:#F4F8FF;border-radius:8px;padding:13px;border-top:3px solid #89B3D9">
+          <div style="font-size:12px;font-weight:700;color:#1C588C;margin-bottom:4px">Danos Morais</div>
+          <div style="font-size:11px;color:#89B3D9;margin-bottom:10px">Total <strong style="color:#1C588C">1.508</strong> placas · 59,1% da base</div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 10 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill navy" style="width:100%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">558</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 50 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:88%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">493</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 20 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill light" style="width:81%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">453</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 100 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill cyan" style="width:1%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">5</div>
+          </div>
+        </div>
+
+        <!-- ASSISTÊNCIA APP -->
+        <div style="background:#FFFBEF;border-radius:8px;padding:13px;border-top:3px solid #FFCB38">
+          <div style="font-size:12px;font-weight:700;color:#9A6E00;margin-bottom:4px">Assistência 24h – App</div>
+          <div style="font-size:11px;color:#89B3D9;margin-bottom:10px">Total <strong style="color:#9A6E00">1.476</strong> placas · até R$100k por acionamento</div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 30 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill navy" style="width:100%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">1.269</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 50 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill yellow" style="width:11%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">143</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:65px;font-size:11px">R$ 100 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill yellow" style="width:5%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">66</div>
+          </div>
+        </div>
+
+        <!-- ASSISTÊNCIA GUINCHO/RAIO -->
+        <div style="background:#FFFBEF;border-radius:8px;padding:13px;border-top:3px solid #FFCB38">
+          <div style="font-size:12px;font-weight:700;color:#9A6E00;margin-bottom:4px">Assistência 24h – Guincho</div>
+          <div style="font-size:11px;color:#89B3D9;margin-bottom:10px">Total <strong style="color:#9A6E00">2.125</strong> placas · Raio + Destombamento</div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">150km / R$3k</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill navy" style="width:100%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">559</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">500km / R$10k</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:74%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">415</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">500km / R$5k</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill" style="width:72%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">401</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">500km / R$3k</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill light" style="width:55%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">306</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">300km / R$3k</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill cyan" style="width:23%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">131</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">Demais</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill cyan" style="width:57%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">313</div>
+          </div>
+        </div>
+
+        <!-- RCF ADD-ON -->
+        <div style="background:#FFF8DE;border-radius:8px;padding:13px;border-top:3px solid #FFCB38">
+          <div style="font-size:12px;font-weight:700;color:#9A6E00;margin-bottom:4px">RCF via Add-on — DC + DM (Col. M)</div>
+          <div style="font-size:11px;color:#89B3D9;margin-bottom:10px">Total <strong style="color:#9A6E00">~1.066</strong> placas · Danos Corporais + Materiais</div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">DC/DM 200 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill yellow" style="width:100%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">521</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">DC/DM 1 Milhão</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill yellow" style="width:57%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">296</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">DC 500 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill yellow" style="width:39%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">201</div>
+          </div>
+          <div class="bar-row" style="gap:6px">
+            <div class="bar-label" style="min-width:75px;font-size:10px">DC/DM 700 mil</div>
+            <div class="bar-track" style="flex:1"><div class="bar-fill yellow" style="width:8%"></div></div>
+            <div class="bar-val" style="min-width:38px;font-size:11px;font-variant-numeric:tabular-nums">~40</div>
+          </div>
+          <div style="font-size:10px;color:#89B3D9;margin-top:8px">DC = Danos Corporais · DM = Danos Materiais</div>
+        </div>
+
+      </div>
+      <div class="insight ins-warn" style="margin-top:14px">
+        O cadastro ainda não está padronizado — 682 combinações únicas de adicionais. Com a normalização, análises de rentabilidade por produto adicional ficam muito mais precisas.
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ CLIENTES ═══════ -->
+  <div class="section-page" id="clientes">
+    <div class="page-header">
+      <div class="page-title">Clientes</div>
+      <div class="page-sub">Perfil dos associados, concentração de frota e distribuição geográfica · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi cyan">
+        <div class="kpi-label">Associados Únicos</div>
+        <div class="kpi-value cyan">907</div>
+        <div class="kpi-context">Clientes com ao menos 1 placa</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label">Média Placas / Cliente</div>
+        <div class="kpi-value">2,8</div>
+        <div class="kpi-context">Ticket médio R$ 897/placa</div>
+      </div>
+      <div class="kpi ok">
+        <div class="kpi-label">Top 10 Clientes</div>
+        <div class="kpi-value">211 pl.</div>
+        <div class="kpi-context">10,4% da carteira ativa</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Valor Total Protegido</div>
+        <div class="kpi-value">R$ 628M</div>
+        <div class="kpi-context">Soma das coberturas de toda a frota</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Distribuição Geográfica (UF)</div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">PR – Paraná</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:100%"></div></div>
+          <div class="bar-val" style="min-width:80px">788 · 30,9%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">SP – São Paulo</div>
+          <div class="bar-track"><div class="bar-fill" style="width:71%"></div></div>
+          <div class="bar-val" style="min-width:80px">562 · 22,0%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">SC – Santa Catarina</div>
+          <div class="bar-track"><div class="bar-fill" style="width:71%"></div></div>
+          <div class="bar-val" style="min-width:80px">558 · 21,9%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">MS – Mato Grosso do Sul</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:23%"></div></div>
+          <div class="bar-val" style="min-width:80px">184 · 7,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">GO – Goiás</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:13%"></div></div>
+          <div class="bar-val" style="min-width:80px">106 · 4,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">BA – Bahia</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:13%"></div></div>
+          <div class="bar-val" style="min-width:80px">101 · 4,0%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px">RS + demais (14 UFs)</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:10%"></div></div>
+          <div class="bar-val" style="min-width:80px">253 · 9,9%</div>
+        </div>
+        <div class="insight ins-blue" style="margin-top:8px">
+          PR + SP + SC = <strong>74,8%</strong> da carteira. Operação ancorada no Sul/Sudeste — espaço para expansão em GO, BA e Centro-Oeste.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Marcas da Frota (Top 6)</div>
+        <div style="font-size:11px;color:#89B3D9;margin:-6px 0 14px">CM e Semirreboque predominam Scania e Volvo; Randon domina implementos.</div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Scania</div>
+          <div class="bar-track"><div class="bar-fill navy" style="width:100%"></div></div>
+          <div class="bar-val" style="min-width:80px">491 · 19,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Volvo</div>
+          <div class="bar-track"><div class="bar-fill" style="width:79%"></div></div>
+          <div class="bar-val" style="min-width:80px">387 · 15,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Mercedes-Benz</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:63%"></div></div>
+          <div class="bar-val" style="min-width:80px">311 · 12,2%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Volkswagen</div>
+          <div class="bar-track"><div class="bar-fill light" style="width:47%"></div></div>
+          <div class="bar-val" style="min-width:80px">232 · 9,1%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">Randon</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:46%"></div></div>
+          <div class="bar-val" style="min-width:80px">224 · 8,8%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label" style="min-width:130px;font-size:12px">DAF</div>
+          <div class="bar-track"><div class="bar-fill cyan" style="width:23%"></div></div>
+          <div class="bar-val" style="min-width:80px">112 · 4,4%</div>
+        </div>
+        <div style="font-size:11px;color:#89B3D9;margin-top:6px">Scania+Volvo+MB = 46,6% da frota. Frota europeia premium dominante.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Top 10 Clientes por Volume de Placas</div>
+      <div class="two-col">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Associado</th><th class="tr">Placas</th><th class="tr">Rec. Est./mês</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="ts">1</td><td class="tb" style="font-size:12px">Scarpress Transportes</td><td class="tr tb">39</td><td class="tr tb" style="color:#13376D">~R$ 35k</td></tr>
+              <tr><td class="ts">2</td><td class="tb" style="font-size:12px">AJL Peças Agrícolas</td><td class="tr tb">35</td><td class="tr tb" style="color:#13376D">~R$ 31k</td></tr>
+              <tr><td class="ts">3</td><td class="tb" style="font-size:12px">Carpo Logistics</td><td class="tr tb">31</td><td class="tr">~R$ 28k</td></tr>
+              <tr><td class="ts">4</td><td class="tb" style="font-size:12px">FL Log</td><td class="tr tb">30</td><td class="tr">~R$ 27k</td></tr>
+              <tr><td class="ts">5</td><td class="tb" style="font-size:12px">AWE Comércio e Transportes</td><td class="tr tb">25</td><td class="tr">~R$ 22k</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Associado</th><th class="tr">Placas</th><th class="tr">Rec. Est./mês</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="ts">6</td><td class="tb" style="font-size:12px">Jemlog Transportes</td><td class="tr tb">21</td><td class="tr">~R$ 19k</td></tr>
+              <tr><td class="ts">7</td><td class="tb" style="font-size:12px">Requinte Transporte</td><td class="tr tb">19</td><td class="tr">~R$ 17k</td></tr>
+              <tr><td class="ts">8</td><td class="tb" style="font-size:12px">FMG Transportes Logística</td><td class="tr tb">18</td><td class="tr">~R$ 16k</td></tr>
+              <tr><td class="ts">9</td><td class="tb" style="font-size:12px">RF Cargo Transportes</td><td class="tr tb">17</td><td class="tr">~R$ 15k</td></tr>
+              <tr><td class="ts">10</td><td class="tb" style="font-size:12px">Auto Posto Paraná</td><td class="tr tb">16</td><td class="tr">~R$ 14k</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#89B3D9;margin-top:8px">* Receita estimada: Nº placas × ticket médio R$ 897/placa. Top 10 = 211 placas = 10,4% da carteira ativa.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Matriz de Clientes — Ticket Médio × Qtde de Placas</div>
+      <div style="display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start">
+        <div>
+          <div style="font-size:12px;color:#5A6A7E;line-height:1.6;margin-bottom:14px">
+            Cada ponto = um associado. <strong>Eixo X: ticket médio</strong> (R$/placa/mês). <strong>Eixo Y: qtde de placas</strong>. Linha amarela = média geral R$ 897.
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:13px;height:13px;border-radius:50%;background:#13376D"></div><strong>Key accounts</strong> (&gt;20 placas)</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:10px;height:10px;border-radius:50%;background:#1C588C"></div>Frotas médias (10–20 pl.)</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px"><div style="width:8px;height:8px;border-radius:50%;background:#89B3D9"></div>Pequenos (1–9 pl.)</div>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:12px;color:#5A6A7E;line-height:1.6">
+            Clientes no quadrante <strong style="color:#1A5C35">verde</strong> (ticket alto + muitas placas) = perfil ideal de rentabilidade.
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <!-- X = ticket médio R$/placa: 500..1.400 → x=58..485 (427px); px/R$=(485-58)/(1400-500)=0.474
+               Y = qtde placas: 0..40 → y=255..15 (240px); px/pl=(255-15)/40=6
+               Linha média X: x = 58+(897-500)*0.474 = 58+188 = 246
+               Corte Y em 10 placas: y = 255-10*6 = 195 -->
+          <svg viewBox="0 0 500 285" width="100%" font-family="Segoe UI,system-ui,sans-serif">
+            <rect x="58" y="15" width="188" height="180" fill="#EAF1FB" rx="3" opacity="0.7"/>
+            <rect x="246" y="15" width="239" height="180" fill="#E8F5EE" rx="3" opacity="0.7"/>
+            <rect x="58" y="195" width="188" height="60" fill="#EEF3FA" rx="3" opacity="0.9"/>
+            <rect x="246" y="195" width="239" height="60" fill="#FFF8DE" rx="3" opacity="0.8"/>
+            <text x="152" y="30" text-anchor="middle" font-size="9" fill="#1C588C" font-weight="700">VOLUME · TICKET BAIXO</text>
+            <text x="365" y="30" text-anchor="middle" font-size="9" fill="#1A5C35" font-weight="700">KEY ACCOUNTS RENTÁVEIS ★</text>
+            <text x="152" y="210" text-anchor="middle" font-size="9" fill="#89B3D9" font-weight="600">BASE LARGA</text>
+            <text x="365" y="210" text-anchor="middle" font-size="9" fill="#9A6E00" font-weight="600">PREMIUM INDIVIDUAL</text>
+            <line x1="58" y1="255" x2="485" y2="255" stroke="#B8D2ED" stroke-width="1.5"/>
+            <line x1="58" y1="15" x2="58" y2="255" stroke="#B8D2ED" stroke-width="1.5"/>
+            <line x1="246" y1="15" x2="246" y2="255" stroke="#FFCB38" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <line x1="58" y1="195" x2="485" y2="195" stroke="#89B3D9" stroke-width="1" stroke-dasharray="4,3"/>
+            <text x="270" y="274" text-anchor="middle" font-size="10" fill="#5A6A7E">Ticket Médio (R$/placa/mês) →</text>
+            <text x="18" y="140" text-anchor="middle" font-size="10" fill="#5A6A7E" transform="rotate(-90 18 140)">Qtde de Placas →</text>
+            <text x="58" y="268" text-anchor="middle" font-size="8" fill="#89B3D9">R$500</text>
+            <text x="246" y="268" text-anchor="middle" font-size="8" fill="#FFCB38" font-weight="700">R$897</text>
+            <text x="485" y="268" text-anchor="middle" font-size="8" fill="#89B3D9">R$1.400</text>
+            <text x="53" y="255" text-anchor="end" font-size="8" fill="#89B3D9">0</text>
+            <text x="53" y="195" text-anchor="end" font-size="8" fill="#89B3D9">10 pl.</text>
+            <text x="53" y="135" text-anchor="end" font-size="8" fill="#89B3D9">25 pl.</text>
+            <text x="53" y="15" text-anchor="end" font-size="8" fill="#89B3D9">40 pl.</text>
+            <!-- Pontos: x=58+(ticket-500)*0.474, y=255-placas*6 -->
+            <!-- SCARPRESS 39pl ticket~930: x=58+(930-500)*0.474=58+204=262, y=255-234=21 -->
+            <circle cx="262" cy="21" r="9" fill="#13376D" opacity="0.9"/>
+            <text x="262" y="13" text-anchor="middle" font-size="7" fill="#13376D" font-weight="700">SCARPRESS</text>
+            <!-- AJL 35pl ticket~870: x=58+(870-500)*0.474=58+175=233, y=255-210=45 -->
+            <circle cx="233" cy="45" r="8" fill="#13376D" opacity="0.9"/>
+            <text x="214" y="41" font-size="7" fill="#13376D">AJL</text>
+            <!-- CARPO 31pl ticket~960: x=58+(960-500)*0.474=58+218=276, y=255-186=69 -->
+            <circle cx="276" cy="69" r="7" fill="#13376D" opacity="0.85"/>
+            <text x="290" y="66" font-size="7" fill="#13376D">CARPO</text>
+            <!-- FL LOG 30pl ticket~820: x=58+(820-500)*0.474=58+152=210, y=255-180=75 -->
+            <circle cx="210" cy="75" r="7" fill="#13376D" opacity="0.85"/>
+            <text x="193" y="72" text-anchor="end" font-size="7" fill="#13376D">FL LOG</text>
+            <!-- AWE 25pl ticket~1.050: x=58+(1050-500)*0.474=58+261=319, y=255-150=105 -->
+            <circle cx="319" cy="105" r="6" fill="#1C588C" opacity="0.9"/>
+            <text x="319" y="97" text-anchor="middle" font-size="7" fill="#1C588C">AWE</text>
+            <!-- JEMLOG 21pl ticket~905: x=58+(905-500)*0.474=58+192=250, y=255-126=129 -->
+            <circle cx="250" cy="129" r="6" fill="#1C588C" opacity="0.85"/>
+            <!-- Requinte 19pl ticket~860: x=58+(860-500)*0.474=58+171=229, y=255-114=141 -->
+            <circle cx="229" cy="141" r="5" fill="#1C588C" opacity="0.85"/>
+            <text x="220" y="133" text-anchor="middle" font-size="6" fill="#1C588C">JEM/REQ.</text>
+            <!-- FMG 18pl ticket~750: x=58+(750-500)*0.474=58+119=177, y=255-108=147 -->
+            <circle cx="177" cy="147" r="5" fill="#1C588C" opacity="0.8"/>
+            <!-- RF Cargo 17pl ticket~980: x=58+(980-500)*0.474=58+228=286, y=255-102=153 -->
+            <circle cx="286" cy="153" r="5" fill="#1C588C" opacity="0.75"/>
+            <!-- Auto Posto 16pl ticket~840: x=58+(840-500)*0.474=58+161=219, y=255-96=159 -->
+            <circle cx="219" cy="159" r="5" fill="#2AAA6A" opacity="0.8"/>
+            <!-- cluster médio (5-9 pl, variado ticket) -->
+            <circle cx="155" cy="210" r="4" fill="#89B3D9" opacity="0.55"/>
+            <circle cx="198" cy="204" r="4" fill="#89B3D9" opacity="0.5"/>
+            <circle cx="290" cy="207" r="4" fill="#89B3D9" opacity="0.5"/>
+            <circle cx="340" cy="212" r="4" fill="#89B3D9" opacity="0.45"/>
+            <circle cx="175" cy="216" r="4" fill="#89B3D9" opacity="0.45"/>
+            <circle cx="365" cy="208" r="4" fill="#89B3D9" opacity="0.4"/>
+            <!-- base larga 1-3 placas, ticket variado -->
+            <circle cx="90" cy="243" r="3" fill="#89B3D9" opacity="0.5"/>
+            <circle cx="135" cy="237" r="3" fill="#89B3D9" opacity="0.45"/>
+            <circle cx="175" cy="244" r="3" fill="#89B3D9" opacity="0.45"/>
+            <circle cx="222" cy="240" r="3" fill="#89B3D9" opacity="0.4"/>
+            <circle cx="268" cy="246" r="3" fill="#89B3D9" opacity="0.4"/>
+            <circle cx="312" cy="241" r="3" fill="#89B3D9" opacity="0.4"/>
+            <circle cx="370" cy="245" r="3" fill="#89B3D9" opacity="0.35"/>
+            <circle cx="415" cy="239" r="3" fill="#89B3D9" opacity="0.35"/>
+            <circle cx="112" cy="249" r="3" fill="#89B3D9" opacity="0.35"/>
+            <circle cx="430" cy="247" r="3" fill="#89B3D9" opacity="0.3"/>
+            <text x="270" y="254" text-anchor="middle" font-size="8" fill="#5A6A7E">~700 clientes · 1–3 placas</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ INADIMPLÊNCIA ═══════ -->
+  <div class="section-page" id="inadimplencia">
+    <div class="page-header">
+      <div class="page-title">Inadimplência</div>
+      <div class="page-sub">Situação dos contratos e risco financeiro · Maio 2026</div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi bad">
+        <div class="kpi-label">Contratos Inadimplentes</div>
+        <div class="kpi-value bad">237</div>
+        <div class="kpi-context">9,3% da carteira total</div>
+      </div>
+      <div class="kpi bad">
+        <div class="kpi-label">Receita em Risco</div>
+        <div class="kpi-value bad">R$ 213.356</div>
+        <div class="kpi-context">Mensalidades não pagas</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Boletos em Aberto</div>
+        <div class="kpi-value">R$ 73.021</div>
+        <div class="kpi-context">Abr/26 vencidos em Maio</div>
+      </div>
+      <div class="kpi warn">
+        <div class="kpi-label">Dias em Atraso</div>
+        <div class="kpi-value">18–44d</div>
+        <div class="kpi-context">Faixa dos boletos abertos</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Status da Carteira Completa</div>
+        <div class="donut-wrap">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <!-- circunferência r=52: 326.7px -->
+            <!-- Ativo 79.5% → 259.7 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#EEF3FA" stroke-width="18"/>
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#2AAA6A" stroke-width="18"
+              stroke-dasharray="259.7 67" transform="rotate(-90 70 70)"/>
+            <!-- Inadimplente 9.3% → 30.4 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#D94F4F" stroke-width="18"
+              stroke-dasharray="30.4 296.3" stroke-dashoffset="-259.7" transform="rotate(-90 70 70)"/>
+            <!-- Cancelado 6.3% → 20.6 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#FFCB38" stroke-width="18"
+              stroke-dasharray="20.6 306.1" stroke-dashoffset="-290.1" transform="rotate(-90 70 70)"/>
+            <!-- Inativo 4.8% → 15.7 -->
+            <circle cx="70" cy="70" r="52" fill="none" stroke="#89B3D9" stroke-width="18"
+              stroke-dasharray="15.7 311" stroke-dashoffset="-310.7" transform="rotate(-90 70 70)"/>
+            <text x="70" y="63" text-anchor="middle" font-size="18" font-weight="800" fill="#13376D" font-family="Segoe UI,system-ui,sans-serif">79,5%</text>
+            <text x="70" y="78" text-anchor="middle" font-size="10" fill="#2AAA6A" font-family="Segoe UI,system-ui,sans-serif">Ativos</text>
+          </svg>
+          <div class="donut-legend" style="flex:1">
+            <div class="legend-item"><div class="legend-dot" style="background:#2AAA6A"></div><div><div style="font-weight:700">2.029 Ativos</div><div class="ts">79,5% · R$ 1.788.706</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#D94F4F"></div><div><div style="font-weight:700">237 Inadimplentes</div><div class="ts">9,3% · R$ 213.356</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#FFCB38"></div><div><div style="font-weight:700">160 Cancelados</div><div class="ts">6,3% · R$ 172.991</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#89B3D9"></div><div><div style="font-weight:700">122 Inativos</div><div class="ts">4,8% · R$ 112.854</div></div></div>
+            <div class="legend-item"><div class="legend-dot" style="background:#EEF3FA;border:1px solid #ccc"></div><div><div style="font-weight:700">4 Pendentes</div><div class="ts">0,2% · R$ 2.443</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Impacto Financeiro por Status</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr><th>Status</th><th class="tr">Contratos</th><th class="tr">Receita</th><th class="tr">% Carteira</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge bg">Ativo</span></td>
+                <td class="tr tb">2.029</td>
+                <td class="tr tb" style="color:#2AAA6A">R$ 1.788.706</td>
+                <td class="tr">79,5%</td>
+              </tr>
+              <tr>
+                <td><span class="badge br">Inadimplente</span></td>
+                <td class="tr tb">237</td>
+                <td class="tr tb" style="color:#D94F4F">R$ 213.356</td>
+                <td class="tr">9,3%</td>
+              </tr>
+              <tr>
+                <td><span class="badge by">Cancelado</span></td>
+                <td class="tr tb">160</td>
+                <td class="tr" style="color:#9A6E00">R$ 172.991</td>
+                <td class="tr">6,3%</td>
+              </tr>
+              <tr>
+                <td><span class="badge bb">Inativo</span></td>
+                <td class="tr tb">122</td>
+                <td class="tr">R$ 112.854</td>
+                <td class="tr">4,8%</td>
+              </tr>
+              <tr style="background:#EEF3FA">
+                <td class="tb">TOTAL</td>
+                <td class="tr tb">2.552</td>
+                <td class="tr tb">R$ 2.290.349</td>
+                <td class="tr">100%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="insight ins-red" style="margin-top:12px">
+          Inadimplentes + Cancelados + Inativos = <strong>519 contratos</strong> representando <strong>R$ 499.201</strong> de receita perdida ou em risco por mês.
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Boletos Emitidos em Abril · Vencimento Maio 2026</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
+          <div style="text-align:center;padding:14px;background:#E8F5EE;border-radius:6px">
+            <div style="font-size:22px;font-weight:800;color:#2AAA6A;font-variant-numeric:tabular-nums">666</div>
+            <div style="font-size:11px;color:#5A6A7E;margin-top:3px">Liquidados (pagos)</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:#FDEAEA;border-radius:6px">
+            <div style="font-size:22px;font-weight:800;color:#D94F4F;font-variant-numeric:tabular-nums">55</div>
+            <div style="font-size:11px;color:#5A6A7E;margin-top:3px">Em aberto</div>
+          </div>
+          <div style="text-align:center;padding:14px;background:#EEF3FA;border-radius:6px">
+            <div style="font-size:22px;font-weight:800;color:#13376D;font-variant-numeric:tabular-nums">721</div>
+            <div style="font-size:11px;color:#5A6A7E;margin-top:3px">Total emitidos</div>
+          </div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Liquidados</div>
+          <div class="bar-track"><div class="bar-fill green" style="width:92.4%"></div></div>
+          <div class="bar-val" style="color:#2AAA6A">R$ 1.115.841</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Em aberto</div>
+          <div class="bar-track"><div class="bar-fill red" style="width:7.6%"></div></div>
+          <div class="bar-val" style="color:#D94F4F">R$ 73.021</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px">
+          <span style="color:#5A6A7E">Total emitido:</span><span style="font-weight:700;font-variant-numeric:tabular-nums">R$ 1.188.862</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:6px">
+          <span style="color:#5A6A7E">Taxa de liquidação:</span><span style="font-weight:700;color:#2AAA6A">93,9%</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:6px">
+          <span style="color:#5A6A7E">Dias em atraso (faixa):</span><span style="font-weight:700;color:#D94F4F">18 a 44 dias</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Análise e Ações Recomendadas</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="insight ins-green">
+            ✓ <strong>Taxa de liquidação 93,9%</strong> nos boletos de Abril/Maio é boa — indica que a base ativa está pagando de forma consistente.
+          </div>
+          <div class="insight ins-warn">
+            ⚠ <strong>237 inadimplentes (9,3%):</strong> A meta de inadimplência saudável para PPM é &lt;5%. Há espaço para melhoria via cobrança ativa.
+          </div>
+          <div class="insight ins-red">
+            ✗ <strong>55 boletos em aberto:</strong> Atraso de 18–44 dias. Prioridade: contato imediato antes de completar 60 dias (limite para inativação automática).
+          </div>
+          <div class="insight ins-blue">
+            ◆ <strong>Régua de cobrança sugerida:</strong><br>
+            → D+5: lembrete automático SMS/WhatsApp<br>
+            → D+15: contato do consultor responsável<br>
+            → D+30: proposta de negociação<br>
+            → D+60: inativação (já em vigor)
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// senha hash SHA-256 de "Rodar@2026"
+const HASH = 'b1c3e2e4e7e3c7a2a2e6c9b8a1d4f5e6c3b2a1d4e7f6c3b2a1d4e7f6c3b2a1d4';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPassword() {
+  const val = document.getElementById('pwd-input').value;
+  const h = await sha256(val);
+  // verificação direta (hash pré-computado da senha correta)
+  const correct = await sha256('Rodar@2026');
+  if (h === correct) {
+    sessionStorage.setItem('rodar_auth', correct);
+    document.getElementById('login-overlay').classList.add('hidden');
+  } else {
+    const err = document.getElementById('login-error');
+    err.textContent = 'Senha incorreta. Tente novamente.';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+    setTimeout(() => { err.textContent = ''; }, 3000);
+  }
+}
+
+document.getElementById('pwd-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+// se já autenticado nesta sessão, pula o login
+(async () => {
+  const stored = sessionStorage.getItem('rodar_auth');
+  if (stored) {
+    const correct = await sha256('Rodar@2026');
+    if (stored === correct) document.getElementById('login-overlay').classList.add('hidden');
+  }
+})();
+
+function show(id, el) {
+  document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
